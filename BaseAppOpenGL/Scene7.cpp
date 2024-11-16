@@ -32,16 +32,16 @@ CScene7::CScene7()
 
 	fTimerPosY = 0.0f;
 	fRenderPosY = 0.0f;
-
+	fogDensiti = 13.0f;
 	
 	// Carrega todas as texturas
 	pTextures = new CTexture();
-	pTextures->CreateTextureAnisotropic(0, "../assets/skybox2-right2.jpg");
-	pTextures->CreateTextureAnisotropic(1, "../assets/skybox2-front.jpg");
-	pTextures->CreateTextureAnisotropic(2, "../assets/skybox2-bottom.jpg");
-	pTextures->CreateTextureAnisotropic(3, "../assets/skybox2-top.jpg");
-	pTextures->CreateTextureAnisotropic(4, "../assets/skybox2-right.jpg");
-	pTextures->CreateTextureAnisotropic(5, "../assets/skybox2-left.jpg");
+	pTextures->CreateTextureClamp(0, "../Scene1/back.bmp");
+	pTextures->CreateTextureClamp(1, "../Scene1/front.bmp");
+	pTextures->CreateTextureClamp(2, "../Scene1/down.bmp");
+	pTextures->CreateTextureClamp(3, "../Scene1/up.bmp");
+	pTextures->CreateTextureClamp(4, "../Scene1/left.bmp");
+	pTextures->CreateTextureClamp(5, "../Scene1/right.bmp");
 
 	pTextures->CreateTextureAnisotropic(6, "../Scene7/stair.jpg");
 	pTextures->CreateTextureMipMap(7, "../Scene1/grass.bmp");
@@ -270,7 +270,7 @@ int CScene7::DrawGLScene(void)	// Função que desenha a cena
 		glFogfv(GL_FOG_COLOR, fogColor);
 
 		// Define a distância inicial e final da névoa
-		glFogf(GL_FOG_START, 13.0f); // Distância inicial da névoa
+		glFogf(GL_FOG_START, fogDensiti); // Distância inicial da névoa
 		glFogf(GL_FOG_END, 70.0f);   // Distância final da névoa
 		glFogi(GL_FOG_MODE, GL_LINEAR);
 		glHint(GL_FOG_HINT, GL_NICEST);
@@ -368,6 +368,8 @@ int CScene7::DrawGLScene(void)	// Função que desenha a cena
 	glRasterPos2f(10.0f, 80.0f);
 	pTexto->glPrint("Frames-per-Second: %d ---- Timer: %.1f segundos", iFPS, (pTimer->GetTime()/1000));
 
+	glRasterPos2f(10.0f, 100.0f);
+	pTexto->glPrint("Distancia Fog: %f", fogDensiti);
 
 	glPopMatrix();
 
@@ -750,6 +752,16 @@ void CScene7::KeyPressed(void) // Tratamento de teclas pressionadas
 	if (GetKeyState(VK_NEXT) & 0x80 && enabledSpotlight)
 	{
 		LightPosition[1] -= 0.8f;
+	}
+
+	if (GetKeyState(VK_F1) & 0x80 && enabledFog)
+	{
+		fogDensiti += 0.1f;
+	}
+
+	if (GetKeyState(VK_F2) & 0x80 && enabledFog)
+	{
+		fogDensiti -= 0.1f;
 	}
 }
 
