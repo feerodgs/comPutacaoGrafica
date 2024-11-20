@@ -122,7 +122,7 @@ private:
 	bool enabledSpotlight;
 
 	GLuint textureArray[1];
-
+	float fogDensiti;
 
 };
 
