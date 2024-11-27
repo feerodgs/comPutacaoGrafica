@@ -40,7 +40,7 @@ CScene5::CScene5()
 	// Carrega a casa
 	pCasa = NULL;
 	pCasa = new CModel_3DS();
-	pCasa->Load("../Scene5/Casa.3ds");
+	pCasa->Load("../Scene5/Casa2.3ds");
 
 	pPonte = NULL;
 	pPonte = new CModel_3DS();
@@ -51,9 +51,9 @@ CScene5::CScene5()
 	pTerreno = new CModel_3DS();
 	pTerreno->Load("../Scene5/Terreno.3ds");
 
-	pModel3DS_1 = NULL;
-	pModel3DS_1 = new CModel_3DS();
-	pModel3DS_1->Load("../assets/dark-souls-bonfire/textures/Statue.3ds");
+	pStatue = NULL;
+	pStatue = new CModel_3DS();
+	pStatue->Load("../Scene5/Statue.3ds");
 
 	enabledFog = false;
 
@@ -67,8 +67,8 @@ CScene5::CScene5()
 
 
 	// Configurando a POINT LIGHT
-	fPointLightPosX = -10.0f;
-	fPointLightPosY = 5.0f;
+	fPointLightPosX = 10.0f;
+	fPointLightPosY = 60.0f;
 	fPointLightPosZ = 10.0f;
 	PointLightAmbient[0] = 1.0f;	PointLightAmbient[1] = 1.0f;	PointLightAmbient[2] = 1.0f;	PointLightAmbient[3] = 1.0f;
 	PointLightDiffuse[0] = 1.0f;	PointLightDiffuse[1] = 1.0f;	PointLightDiffuse[2] = 1.0f;	PointLightDiffuse[3] = 1.0f;
@@ -79,12 +79,12 @@ CScene5::CScene5()
 	PointLightPosition[3] = 1.0f;
 
 	// Configurando a SPOT LIGHT
-	fSpotLightPosX = 50.0f;
-	fSpotLightPosY = 50.0f;
-	fSpotLightPosZ = 40.0f;
+	fSpotLightPosX = 10.0f;
+	fSpotLightPosY = 60.0f;
+	fSpotLightPosZ = 10.0f;
 	SpotLightAmbient[0] = 1.0f;	SpotLightAmbient[1] = 1.0f;	SpotLightAmbient[2] = 1.0f;	SpotLightAmbient[3] = 1.0f;
 	SpotLightDiffuse[0] = 1.0f;	SpotLightDiffuse[1] = 1.0f;	SpotLightDiffuse[2] = 1.0f;	SpotLightDiffuse[3] = 1.0f;
-	SpotLightSpecular[0] = 1.0f;	SpotLightSpecular[1] = 1.0f;	SpotLightSpecular[2] = 1.0f;	SpotLightSpecular[3] = 1.0f;
+	SpotLightSpecular[0] = 1.0f; SpotLightSpecular[1] = 1.0f;	SpotLightSpecular[2] = 1.0f;	SpotLightSpecular[3] = 1.0f;
 	SpotLightDirection[0] = 0.0f;	SpotLightDirection[1] = -1.0f;	SpotLightDirection[2] = 0.0f;	SpotLightDirection[3] = 1.0f;
 	fSpotAttenuation = 10.0f;
 	fSpotCutOff = 45.0f;
@@ -142,10 +142,10 @@ CScene5::~CScene5(void)
 		pTerreno = NULL;
 	}
 
-	if (pModel3DS_1)
+	if (pStatue)
 	{
-		delete pModel3DS_1;
-		pModel3DS_1 = NULL;
+		delete pStatue;
+		pStatue = NULL;
 	}
 }
 
@@ -274,15 +274,17 @@ int CScene5::DrawGLScene(void) // Fun��o que desenha a cena
 					 pTextures);
 	}
 
+
 	//  Desenha a casa
 	glPushMatrix();
-	glTranslatef(0.0f, 0.0f, 0.0f);
+	glTranslatef(-45.0f, -2.0f, 5.0f);
+	glRotatef(180.0f, 0.0f, 1.0f, 0.0f); 
 	pCasa->Draw();
 	glPopMatrix();
 
 	glPushMatrix();
 	glTranslatef(0.0f, 20.0f, -30.0f);
-	pModel3DS_1->Draw();
+	pStatue->Draw();
 	glPopMatrix();
 
 	glPushMatrix();
@@ -297,9 +299,7 @@ int CScene5::DrawGLScene(void) // Fun��o que desenha a cena
 	glPopMatrix();
 
 	// Habilita Blending
-	glEnable(GL_BLEND);
-	// Configura fun��o de Blending
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 
 	DrawArvore(10.0f, 25.0f, -37.0f);
 	DrawArvore(12.0f, 25.0f, -24.0f);

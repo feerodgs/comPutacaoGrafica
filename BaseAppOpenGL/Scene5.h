@@ -21,8 +21,8 @@ public:
 	void DrawAxis();
 
 	void CreateSkyBox(float x, float y, float z,
-					  float width, float height, float length,
-					  CTexture *pTextures);
+		float width, float height, float length,
+		CTexture* pTextures);
 
 	void DrawArvore(float x, float y, float z);
 	void DrawRio();
@@ -32,13 +32,13 @@ private:
 	bool active;	 // Window Active Flag Set To TRUE By Default
 	bool fullscreen; // Exibir janela em modo fullscreem (TRUE) ou em janela (FALSE)
 
-	CCamera *pCamera; // Gerencia c�mera OpenGL
+	CCamera* pCamera; // Gerencia c�mera OpenGL
 	float fDeltaY;	  // Rota��o da c�mera OpenGL no eixo Y
 	float fDeltaX;	  // Rota��o da c�mera OpenGL no eixo X
 
-	CTexto *pTexto;		 // Objeto que gerencia texto
-	CTexture *pTextures; // Objeto que gerencia texturas
-	CTimer *pTimer;		 // Objeto que gerencia o timer
+	CTexto* pTexto;		 // Objeto que gerencia texto
+	CTexture* pTextures; // Objeto que gerencia texturas
+	CTimer* pTimer;		 // Objeto que gerencia o timer
 
 	int iFPS;		   // FPS and FPS Counter
 	int iFrames;	   // FPS and FPS Counter
@@ -51,10 +51,10 @@ private:
 	float fRenderPosY;
 	float fTimerPosY;
 
-	CModel_3DS *pCasa;
-	CModel_3DS *pPonte;
-	CModel_3DS *pTerreno;
-	CModel_3DS *pModel3DS_1;
+	CModel_3DS* pCasa;
+	CModel_3DS* pPonte;
+	CModel_3DS* pTerreno;
+	CModel_3DS* pStatue;
 
 	bool enabledFog;
 	bool enabledSpotlight;
