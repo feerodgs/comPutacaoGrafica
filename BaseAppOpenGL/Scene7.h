@@ -15,7 +15,7 @@ public:
 	CScene7();
 	~CScene7(void);
 
-	
+
 	virtual void MouseMove(void);					// Tratamento de movimento do mouse
 	virtual void KeyPressed(void);					// Tratamento de teclas pressionadas
 	virtual void KeyDownPressed(WPARAM	wParam);	// Tratamento de teclas pressionadas
@@ -50,19 +50,19 @@ public:
 	vector<vector<float>> grassPos[10][3];
 
 private:
-	
+
 	bool	keys[256];		// Array usado para rotinas do teclado
 	bool	active;			// Window Active Flag Set To TRUE By Default
 	bool	fullscreen;		// Exibir janela em modo fullscreem (TRUE) ou em janela (FALSE)
-	
 
-	CCamera			*pCamera;	// Gerencia câmera OpenGL
+
+	CCamera* pCamera;	// Gerencia câmera OpenGL
 	float fDeltaY;				// Rotação da câmera OpenGL no eixo Y
 	float fDeltaX;				// Rotação da câmera OpenGL no eixo X
 
-	CTexto			*pTexto;	// Objeto que gerencia texto
-	CTexture		*pTextures;	// Objeto que gerencia texturas
-	CTimer			*pTimer;	// Objeto que gerencia o timer
+	CTexto* pTexto;	// Objeto que gerencia texto
+	CTexture* pTextures;	// Objeto que gerencia texturas
+	CTimer* pTimer;	// Objeto que gerencia o timer
 	CShaderManager* pShaderMgr; // Objeto que gerencia os shaders
 
 
@@ -112,17 +112,16 @@ private:
 	float fPosZ;
 	float fMovementFactor;
 
-	GLUquadric *sphere1;
+	GLUquadric* sphere1;
 
 	CModel_3DS* pModel3DS_1;
 	CModel_3DS* pModel3DS_2;
 	CModel_3DS* pModel3DS_3;
-	
+
 	bool enabledFog;
 	bool enabledSpotlight;
 
 	GLuint textureArray[1];
-	float fogDensiti;
+
 
 };
-
