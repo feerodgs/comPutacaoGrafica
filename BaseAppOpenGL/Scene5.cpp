@@ -5,7 +5,6 @@ CScene5::CScene5()
 	pCamera = NULL;
 	pTexto = NULL;
 	pTextures = NULL;
-	
 	bIsWireframe = false;
 	bIsCameraFPS = true;
 
@@ -52,6 +51,21 @@ CScene5::CScene5()
 	pTerreno = NULL;
 	pTerreno = new CModel_3DS();
 	pTerreno->Load("../Scene5/Terreno.3ds");
+
+	pModel3DS_1 = NULL;
+	pModel3DS_1 = new CModel_3DS();
+	pModel3DS_1->Load("../assets/dark-souls-bonfire/textures/Statue.3ds");
+
+	enabledFog = false;
+	
+
+	// Configuração das variáveis para FOG
+	fFogDensity = 0.01f;
+	iFogMode = 0;
+	vFogColor[0] = 0.7f;
+	vFogColor[1] = 0.7f;
+	vFogColor[2] = 1.0f;
+	vFogColor[3] = 1.0f;
 
 }
 
@@ -100,6 +114,12 @@ CScene5::~CScene5(void)
 		delete pTerreno;
 		pTerreno = NULL;
 	}
+
+	if (pModel3DS_1)
+	{
+		delete pModel3DS_1;
+		pModel3DS_1 = NULL;
+	}
 }
 
 
@@ -118,18 +138,13 @@ int CScene5::DrawGLScene(void)	// Função que desenha a cena
 	
 	pTimer->Update();							// Atualiza o timer
 
+	glClearColor(vFogColor[0], vFogColor[1], vFogColor[2], 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	// Limpa a tela e o Depth Buffer
 	glLoadIdentity();									// Inicializa a Modelview Matrix Atual
 
 
 	// Seta as posições da câmera
 	pCamera->setView();
-
-	// Desenha grid 
-	//Draw3DSGrid(20.0f, 20.0f);
-
-	// Desenha os eixos do sistema cartesiano
-	DrawAxis();
 
 	// Modo FILL ou WIREFRAME (pressione barra de espaço)	
 	if (bIsWireframe)
@@ -146,16 +161,57 @@ int CScene5::DrawGLScene(void)	// Função que desenha a cena
 	// Habilita mapeamento de texturas 2D
 	glEnable(GL_TEXTURE_2D);
 
-	// Desenha o SkyBox
-	CreateSkyBox(0.0f, 100.0f, 0.0f,
-		1000.0f, 1000.0f, 1000.0f,
-		pTextures);
+	glEnable(GL_BLEND);
+	// Configura função de Blending
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	if (enabledFog == true)
+	{
+		glEnable(GL_FOG); // Habilita Neblina (FOG)
+		glHint(GL_FOG_HINT, GL_NICEST); // Qualidade da FOG
+		glFogfv(GL_FOG_COLOR, vFogColor); // Cor da FOG
+		glFogf(GL_FOG_START, 10.0); // Início da FOG a partir da camera
+		glFogf(GL_FOG_END, 1000.0); // Limite dos objetos visíveis
+
+		switch (iFogMode)
+		{
+		case 0:
+			glFogi(GL_FOG_MODE, GL_LINEAR); // Tipo da FOG
+			break;
+
+		case 1:
+			glFogi(GL_FOG_MODE, GL_EXP); // Tipo da FOG
+			glFogf(GL_FOG_DENSITY, fFogDensity);
+			break;
+
+		case 2:
+			glFogi(GL_FOG_MODE, GL_EXP2); // Tipo da FOG
+			glFogf(GL_FOG_DENSITY, fFogDensity);
+			break;
+
+		default:
+			break;
+		}
+
+	}
+	else
+	{
+		// Desenha o SkyBox
+		CreateSkyBox(0.0f, 300.0f, 0.0f,
+			2000.0f, 2000.0f, 2000.0f,
+			pTextures);
+	}
 
 
 	//  Desenha a casa
 	glPushMatrix();
 	glTranslatef(0.0f, 0.0f, 0.0f);
-		pCasa->Draw();
+	pCasa->Draw();
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(0.0f, 20.0f, -30.0f);
+	pModel3DS_1->Draw();
 	glPopMatrix();
 
 	glPushMatrix();
@@ -177,26 +233,15 @@ int CScene5::DrawGLScene(void)	// Função que desenha a cena
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 
-	// Desenha Árvore
-	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_GREATER, 0.5);
-	pTextures->ApplyTexture(7);
-	glPushMatrix();
-	glTranslatef(0.0f, 25.0f, -30.0f);
-	glBegin(GL_QUADS);
-	glTexCoord2f(0.0f, 0.0f); glVertex3f(-10.0f, 0.0f, 0.0f);
-	glTexCoord2f(1.0f, 0.0f); glVertex3f(10.0f, 0.0f, 0.0f);
-	glTexCoord2f(1.0f, 1.0f); glVertex3f(10.0f, 15.0f, 0.0f);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f(-10.0f, 15.0f, 0.0f);
-
-	glTexCoord2f(0.0f, 0.0f); glVertex3f(0.0f, 0.0f, 10.0f);
-	glTexCoord2f(1.0f, 0.0f); glVertex3f(0.0f, 0.0f, -10.0f);
-	glTexCoord2f(1.0f, 1.0f); glVertex3f(0.0f, 15.0f, -10.0f);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f(0.0f, 15.0f, 10.0f);
-	glEnd();
-	glPopMatrix();
-	glDisable(GL_ALPHA_TEST);
+	DrawArvore(10.0f, 25.0f, -37.0f);
+	DrawArvore(12.0f, 25.0f, -24.0f);
+	DrawArvore(-13.0f, 25.0f, -21.0f);
+	DrawArvore(-44.0f, 25.0f, -29.0f);
+	DrawArvore(33.0f, 25.0f, -24.0f);
+	DrawArvore(43.0f, 25.0f, -42.0f);
+	DrawArvore(-32.0f, 25.0f, -24.0f);
+	DrawArvore(-22.0f, 25.0f, -38.0f);
+	DrawArvore(31.0f, 25.0f, -18.0f);
 
 
 
@@ -246,17 +291,12 @@ int CScene5::DrawGLScene(void)	// Função que desenha a cena
 	glDisable(GL_TEXTURE_2D);
 	glPopAttrib();
 
+	if (enabledFog == true)
+	{
+		glDisable(GL_FOG);
+	}
 
-
-
-
-
-
-
-
-	// Desabilita Blending
 	glDisable(GL_BLEND);
-
 	glDisable(GL_TEXTURE_2D);
 
 	
@@ -280,6 +320,18 @@ int CScene5::DrawGLScene(void)	// Função que desenha a cena
 
 
 	glRasterPos2f(10.0f, 0.0f);	// Posicionando o texto na tela
+
+	if (enabledFog)
+		pTexto->glPrint("[ENTER] FOG: TRUE - [F] FOG MODE: %d", iFogMode);
+	else
+		pTexto->glPrint("[ENTER] FOG: FALSE");
+
+	if (enabledFog)
+	{
+		glRasterPos2f(10.0f, 120.0f);
+		pTexto->glPrint("[+/-] FOG Density: %.3f", fFogDensity);
+	}
+
 	if (!bIsWireframe) {
 		pTexto->glPrint("[TAB]  Modo LINE"); // Imprime texto na tela
 	}
@@ -370,8 +422,6 @@ void CScene5::KeyPressed(void) // Tratamento de teclas pressionadas
 	{
 	}
 
-
-
 }
 
 void CScene5::KeyDownPressed(WPARAM	wParam) // Tratamento de teclas pressionadas
@@ -386,9 +436,22 @@ void CScene5::KeyDownPressed(WPARAM	wParam) // Tratamento de teclas pressionadas
 		pTimer->Init();
 		break;
 
-	case VK_RETURN:
+	case VK_F1:
+		enabledFog = !enabledFog;
 		break;
 
+	case VK_F2:
+		fFogDensity += 0.001f;
+		break;
+
+	case VK_F3:
+		fFogDensity -= 0.001f;
+		break;
+	case 'F':
+		iFogMode++;
+		if (iFogMode > 2)
+			iFogMode = 0;
+		break;
 	}
 
 }
@@ -529,4 +592,31 @@ void CScene5::CreateSkyBox(float x, float y, float z,
 	glEnd();
 
 	glPopMatrix();
+}
+
+
+
+void CScene5::DrawArvore(float x, float y, float z)
+{
+
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_GREATER, 0.5);
+	pTextures->ApplyTexture(7);
+	glPushMatrix();
+	glTranslatef(x, y, z);
+	glBegin(GL_QUADS);
+	glTexCoord2f(0.0f, 0.0f); glVertex3f(-10.0f, 0.0f, 0.0f);
+	glTexCoord2f(1.0f, 0.0f); glVertex3f(10.0f, 0.0f, 0.0f);
+	glTexCoord2f(1.0f, 1.0f); glVertex3f(10.0f, 15.0f, 0.0f);
+	glTexCoord2f(0.0f, 1.0f); glVertex3f(-10.0f, 15.0f, 0.0f);
+
+	glTexCoord2f(0.0f, 0.0f); glVertex3f(0.0f, 0.0f, 10.0f);
+	glTexCoord2f(1.0f, 0.0f); glVertex3f(0.0f, 0.0f, -10.0f);
+	glTexCoord2f(1.0f, 1.0f); glVertex3f(0.0f, 15.0f, -10.0f);
+	glTexCoord2f(0.0f, 1.0f); glVertex3f(0.0f, 15.0f, 10.0f);
+	glEnd();
+	glPopMatrix();
+	glDisable(GL_ALPHA_TEST);
+
 }

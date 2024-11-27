@@ -32,16 +32,16 @@ CScene7::CScene7()
 
 	fTimerPosY = 0.0f;
 	fRenderPosY = 0.0f;
-	fogDensiti = 13.0f;
-	
+
+
 	// Carrega todas as texturas
 	pTextures = new CTexture();
-	pTextures->CreateTextureClamp(0, "../Scene1/back.bmp");
-	pTextures->CreateTextureClamp(1, "../Scene1/front.bmp");
-	pTextures->CreateTextureClamp(2, "../Scene1/down.bmp");
-	pTextures->CreateTextureClamp(3, "../Scene1/up.bmp");
-	pTextures->CreateTextureClamp(4, "../Scene1/left.bmp");
-	pTextures->CreateTextureClamp(5, "../Scene1/right.bmp");
+	pTextures->CreateTextureAnisotropic(0, "../assets/skybox2-right2.jpg");
+	pTextures->CreateTextureAnisotropic(1, "../assets/skybox2-front.jpg");
+	pTextures->CreateTextureAnisotropic(2, "../assets/skybox2-bottom.jpg");
+	pTextures->CreateTextureAnisotropic(3, "../assets/skybox2-top.jpg");
+	pTextures->CreateTextureAnisotropic(4, "../assets/skybox2-right.jpg");
+	pTextures->CreateTextureAnisotropic(5, "../assets/skybox2-left.jpg");
 
 	pTextures->CreateTextureAnisotropic(6, "../Scene7/stair.jpg");
 	pTextures->CreateTextureMipMap(7, "../Scene1/grass.bmp");
@@ -65,7 +65,7 @@ CScene7::CScene7()
 	// Carrega Objetos da  Cena (gramado)
 	pModel3DS_3 = new CModel_3DS();
 	pModel3DS_3->Load("../Scene1/Plane001.3DS");
-	
+
 
 	fPosX = 0.0f;
 	fPosY = 10.0f;
@@ -195,7 +195,7 @@ int CScene7::DrawGLScene(void)	// Função que desenha a cena
 		iFrames = 0;							// Reset The FPS Counter
 	}
 	iFrames++;									// FPS counter
-	
+
 	pTimer->Update();							// Atualiza o timer
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	// Limpa a tela e o Depth Buffer
@@ -213,12 +213,12 @@ int CScene7::DrawGLScene(void)	// Função que desenha a cena
 	if (bIsWireframe)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	else
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);	
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//                               DESENHA OS OBJETOS DA CENA (INÍCIO)
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
+
 	glColor3f(1.0f, 1.0f, 1.0f);
 
 	glEnable(GL_TEXTURE_2D);
@@ -252,8 +252,8 @@ int CScene7::DrawGLScene(void)	// Função que desenha a cena
 		Skybox
 	*/
 	CreateSkyBox(0.0f, 100.0f, 0.0f,
-	1000.0f, 1000.0f, 1000.0f,
-	pTextures);
+		1000.0f, 1000.0f, 1000.0f,
+		pTextures);
 
 	/*
 		Neblina
@@ -270,7 +270,7 @@ int CScene7::DrawGLScene(void)	// Função que desenha a cena
 		glFogfv(GL_FOG_COLOR, fogColor);
 
 		// Define a distância inicial e final da névoa
-		glFogf(GL_FOG_START, fogDensiti); // Distância inicial da névoa
+		glFogf(GL_FOG_START, 13.0f); // Distância inicial da névoa
 		glFogf(GL_FOG_END, 70.0f);   // Distância final da névoa
 		glFogi(GL_FOG_MODE, GL_LINEAR);
 		glHint(GL_FOG_HINT, GL_NICEST);
@@ -366,10 +366,8 @@ int CScene7::DrawGLScene(void)	// Função que desenha a cena
 
 	//// Imprime o FPS da aplicação e o Timer
 	glRasterPos2f(10.0f, 80.0f);
-	pTexto->glPrint("Frames-per-Second: %d ---- Timer: %.1f segundos", iFPS, (pTimer->GetTime()/1000));
+	pTexto->glPrint("Frames-per-Second: %d ---- Timer: %.1f segundos", iFPS, (pTimer->GetTime() / 1000));
 
-	glRasterPos2f(10.0f, 100.0f);
-	pTexto->glPrint("Distancia Fog: %f", fogDensiti);
 
 	glPopMatrix();
 
@@ -385,7 +383,7 @@ void CScene7::DrawStairs(float pX, float pY, float pZ,
 	glPushMatrix();
 	glTranslatef(pX, pY, pZ);
 	glRotatef(angle, rX, rY, rZ);
-	
+
 	DrawCube(sX, sY, sZ, 6);
 
 	glPushMatrix();
@@ -753,16 +751,6 @@ void CScene7::KeyPressed(void) // Tratamento de teclas pressionadas
 	{
 		LightPosition[1] -= 0.8f;
 	}
-
-	if (GetKeyState(VK_F1) & 0x80 && enabledFog)
-	{
-		fogDensiti += 0.1f;
-	}
-
-	if (GetKeyState(VK_F2) & 0x80 && enabledFog)
-	{
-		fogDensiti -= 0.1f;
-	}
 }
 
 void CScene7::KeyDownPressed(WPARAM	wParam) // Tratamento de teclas pressionadas
@@ -777,7 +765,7 @@ void CScene7::KeyDownPressed(WPARAM	wParam) // Tratamento de teclas pressionadas
 	{
 		pTimer->Init();
 	}
-		break;
+	break;
 
 	case VK_RETURN:
 

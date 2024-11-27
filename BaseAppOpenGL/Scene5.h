@@ -26,6 +26,8 @@ public:
 		float width, float height, float length,
 		CTexture* pTextures);
 
+	void DrawArvore(float x, float y, float z);
+
 private:
 
 	bool	keys[256];		// Array usado para rotinas do teclado
@@ -40,8 +42,7 @@ private:
 	CTexto* pTexto;	// Objeto que gerencia texto
 	CTexture* pTextures;	// Objeto que gerencia texturas
 	CTimer* pTimer;	// Objeto que gerencia o timer
-
-
+	
 	int		iFPS;			// FPS and FPS Counter
 	int		iFrames;		// FPS and FPS Counter
 	DWORD	ulLastFPS;		// FPS and FPS Counter
@@ -54,10 +55,18 @@ private:
 	float fRenderPosY;
 	float fTimerPosY;
 
-
 	CModel_3DS* pCasa;
 	CModel_3DS* pPonte;
 	CModel_3DS* pTerreno;
+	CModel_3DS* pModel3DS_1;
+
+	bool enabledFog;
+	bool enabledSpotlight;
+
+	
+	float vFogColor[4];
+	float fFogDensity;
+	int iFogMode;
 
 };
 
